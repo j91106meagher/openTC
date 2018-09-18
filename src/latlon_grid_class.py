@@ -44,6 +44,25 @@ class latlon_grid:
         self.vst_max = np.zeros((self.latv.shape))
         self.vst = np.zeros((self.latv.shape))
         
+    def save_vst_max(self,data_path,fn):
+        print('saving ',fn)
+        np.save(data_path+fn,self.vst_max)
+        
+    def plot_vst_max(self):
+        import matplotlib.pyplot as plt
+        
+        #plt.subplot(221)
+        plt.pcolormesh(self.lonv,self.latv,self.vst_max)
+        plt.colorbar()
+        
+        #plt.title('vst_max trk %d y %d'%(self.track,self.year)) 
+            
+            
+        #plt.ion()
+        plt.show()
+        #plt.pause(2)
+        #plt.close()
+        
         
         
     
