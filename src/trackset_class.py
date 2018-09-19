@@ -68,7 +68,7 @@ class track_set:
                         
         f.close()     
         
-    def proc_tracks_ebtrk(self,dt,wg,out_path,trk_i):
+    def proc_tracks_ebtrk(self,dt,wg,out_path,trk_i,debug):
         
         if trk_i > 0:
             wg.vst.fill(0.0)
@@ -77,7 +77,7 @@ class track_set:
             self.tracks[trk_i].ebtrk_rmax()
             self.tracks[trk_i].interp_track(dt)
             self.tracks[trk_i].calc_vmi()
-            self.tracks[trk_i].windfield_hs(wg)
+            self.tracks[trk_i].windfield_hs(wg,debug)
             fn_out = self.tracks[trk_i].ID[0]+'_'+str(self.tracks[trk_i].year)
             wg.save_vst_max(out_path,fn_out)
             
@@ -89,7 +89,7 @@ class track_set:
                 self.tracks[trk_i].ebtrk_rmax()
                 self.tracks[trk_i].interp_track(dt)
                 self.tracks[trk_i].calc_vmi()
-                self.tracks[trk_i].windfield_hs(wg)
+                self.tracks[trk_i].windfield_hs(wg,debug)
                 fn_out = self.tracks[trk_i].ID[0]+'_'+str(self.tracks[trk_i].year)
                 wg.save_vst_max(out_path,fn_out)
             

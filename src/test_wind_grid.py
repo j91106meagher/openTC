@@ -25,7 +25,8 @@ track_fn = 'ebtrk_atlc_1988_2017.txt'
 
 ts = track_set()
 ts.read_track_set_ebtrk(track_fn,data_path)
-ts.proc_tracks_ebtrk(dt, wg, outpath,400)
+debug = True
+ts.proc_tracks_ebtrk(dt, wg, outpath,400,debug)
 
 print('len tracks',len(ts.tracks))
 

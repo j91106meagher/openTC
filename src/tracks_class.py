@@ -165,11 +165,11 @@ class tracks:
             a1 = np.sin(np.deg2rad(dlon))* np.cos(np.deg2rad(self.lati[i]))
             a2 = np.cos(np.deg2rad(self.lati[i-1]))*np.sin(np.deg2rad(self.lati[i])) - np.sin(np.deg2rad(self.lati[i-1]))*np.cos(np.deg2rad(self.lati[i])) * np.cos(np.deg2rad(dlon))
             self.thetai[i] = (np.pi/2.0) - np.arctan2(a1,a2) 
-            print('i',1,az12,az21,self.thetai[i])
+            #print('i',1,az12,az21,self.thetai[i])
         self.vmi[0] = self.vmi[1] 
         self.thetai[0] = self.thetai[1]
         
-    def windfield_hs(self,wg):
+    def windfield_hs(self,wg,debug):
         import matplotlib.pyplot as plt
         
         for i in range(len(self.lati)):
@@ -209,11 +209,17 @@ class tracks:
                 
                 wg.vst_max = np.maximum(wg.vst,wg.vst_max) 
                 
-                if False:
+                if True:
+                #t 'vst','max',wg.vst.max(),'min',wg.vst.min(),'mean',wg.vst.mean()
+                    #print('vst_max','max',wg.vst_max.max(),'min',wg.vst_max.min(),'mean',wg.vst_max.mean())
+                    print('Vmaxi_ms[%d] %f vst.max %f vst.min %f max Vmaxi %f len(trk) %d'%(i,self.Vmaxi_ms[i],wg.vst.max(),wg.vst.min(),max(self.Vmaxi_ms),len(self.lati)))
+                    #print('i',i,'Vmaxi_ms[i]',self.Vmaxi_ms[i],'max Vmaxi',max(self.Vmaxi_ms),self.Vmaxi_ms[i])#,'ID',self.ID[0],self.dto[0]  
+                
+                if (debug and wg.vst_max.max() > 0):
                     #import matplotlib.pyplot as plt 
                     plt.subplot(221)
                     plt.pcolormesh(wg.lonv,wg.latv,wg.vs)
-                    plt.title('vs i %d'%(i))
+                    plt.title('vs i %d of %d'%(i,len(self.lati)))
                     plt.colorbar()
                     #plt.show(block='False')
                     
@@ -224,14 +230,14 @@ class tracks:
                     
                     plt.subplot(223)                    
                     plt.pcolormesh(wg.lonv,wg.latv,wg.vst)
-                    plt.title('vst i %d'%(i))
+                    plt.title('vst')
                     plt.colorbar()
                     plt.ion()
                     plt.show()
-                    plt.pause(2)
+                    plt.pause(5)
                     #time.sleep(8)
                     #plt.close()
-                    #raw_input('Enter to continue2')
+                    #input('Enter to continue2')
                     plt.close()
                 #nter to continue')
         
@@ -265,7 +271,7 @@ class tracks:
             
             plt.ion()
             plt.show()
-            plt.pause(2)
+            plt.pause(5)
             #time.sleep(2)
             #raw_input('Enter to continue')
             plt.close()
