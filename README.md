@@ -14,3 +14,12 @@ The parametric wind-field models take historical or simulated storms tracks as t
 
 A number of extra steps are required to deal with wrap around of longitude at -180 to 180, mulitples of 2pi in local frame angle calcualtions, expotential attenuation of windspeeds in the far field based on radius of last closed barometric contour (storm extent)     
 
+
+## Simulated track sets
+Synethic tropical cyclone track-sets are used to fill out the historical record in terms of intensity and location of storms. Conditional random walk based on the statistics calculated on historical track sets. 
+Hall & Jewson Tellus 2007, Yonekura and Hall JAMC 2011
+- Cyclogensis
+- Conditional randon walk for track and storm progation
+- Lysis (storm termination)
+- Inland filling
+- Extra tropical transistion
