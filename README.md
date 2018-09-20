@@ -13,7 +13,9 @@ The parametric wind-field models take historical or simulated storms tracks as t
 6. vs + vn * cos(wm2rad) add projected storm translational velocity to pure radial windspeed
 
 A number of extra steps are required to deal with wrap around of longitude at -180 to 180, mulitples of 2pi in local frame angle calcualtions, expotential attenuation of windspeeds in the far field based on radius of last closed barometric contour (storm extent) 
-    [notebook](notebooks/example_ebtrk.ipynb)
+
+
+Notebook using ebtrk trackset and calculate Holland 2010 peak wind footprint [ebtrk notebook](notebooks/example_ebtrk.ipynb)
 
 
 ## Simulated track sets
