@@ -15,7 +15,7 @@ The parametric wind-field models take historical or simulated storms tracks as t
 A number of extra steps are required to deal with wrap around of longitude at -180 to 180, mulitples of 2pi in local frame angle calcualtions, expotential attenuation of windspeeds in the far field based on radius of last closed barometric contour (storm extent) 
 
 
-Notebook using ebtrk trackset and calculate Holland 2010 peak wind footprint [ebtrk notebook](notebooks/example_ebtrk.ipynb)
+Notebook using ebtrk trackset and  Holland 2010 windmodel to calculate peak wind footprint [ebtrk notebook](notebooks/example_ebtrk.ipynb)
 
 
 ## Simulated track sets
