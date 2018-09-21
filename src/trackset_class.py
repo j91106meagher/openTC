@@ -94,4 +94,88 @@ class track_set:
                 wg.save_vst_max(out_path,fn_out)
             
             
+           
+    def read_hurdat_set(self,fn,fn_path,debug):
+        self.fn = fn
+        self.fn_path = fn_path
+        i = 0
+        
+        f = open(self.fn_path + self.fn,'r')
+        while (True):
+            try:
+                trk = tracks()
+                l = f.readline()
+                i += 1
+                if l == '': break
+                s = l.split(',')
+                print(i,s)
+                numlines = int(s[2])
+                trk.num_lines.append(numlines)
+                trk.ID.append(s[0].strip())
+                self.ID.append(s[0].strip())
+                trk.year.append(int(s[0].strip()[-4:]))
+                self.year.append(int(s[0].strip()[-4:]))
+                if debug:
+                    print(s,trk.year[-1])
+                try:
+                    trk.Name.append(s[1].strip())
+                except:
+                    trk.Name.append('')
+                    
+                #print('trk.num_lines',trk.num_lines)
+                trk.read_hurdat_track(f,numlines,debug)
+                self.tracks.append(trk)
+                
+        
+            except:
+                print('read_hurdat_set error')
+                break
             
+        f.close()
+        
+    def prep_tracks(self,debug):
+        
+        for i in range(len(self.tracks)):
+            self.tracks[i].calc_deltalatlon()
+            if debug:
+                print('i',i,len(self.tracks[i].dlat),len(self.tracks[i].lat))
+                
+                
+    def genesis_kernel(self,wg,year1,year2,L,debug): 
+        #L = 210*1000 #length scale in meters
+        #from geopy.distance import great_circle
+        
+        print('starting genesis_kernel','ny',wg.ny,'nx',wg.nx,'ntracks',len(self.tracks))
+        
+        from pyproj import Geod
+
+        wgs84_geod = Geod(ellps='WGS84') #Distance will be measured on this ellipsoid - more accurate than a spherical method
+
+        lat0 = np.zeros((wg.ny,wg.nx))
+        lon0 = np.zeros((wg.ny,wg.nx))
+        
+        for i in range(len(self.tracks)):
+            if ((self.year[i] >= year1)and(self.year[i] <= year2)):
+                wlon = np.squeeze(wg.lonv[:,:])
+                wlat = np.squeeze(wg.latv[:,:])
+                
+                lat0[:] = self.tracks[i].lat[0]
+                lon0[:] = self.tracks[i].lon[0]
+               
+                az12,az21,dist = wgs84_geod.inv(wlon,wlat,lon0,lat0)
+                pdist = np.exp(-1.0*dist*dist/(2.0*L*L))
+                wg.track_start_prob[:,:] += pdist
+                
+            print(i,'of ',len(self.tracks))
+        wg.track_start_prob =  wg.track_start_prob / wg.track_start_prob.sum()
+        
+        if debug:
+            import matplotlib.pyplot as plt 
+            #plt.subplot(221)
+            plt.pcolormesh(wg.lonv,wg.latv,wg.track_start_prob)
+            plt.title('genesis prob')
+            plt.colorbar()
+            plt.show()
+            
+            
+                

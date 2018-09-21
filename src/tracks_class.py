@@ -62,6 +62,14 @@ class tracks:
         self.RS30i = []
         self.Rmaxi = []
         
+        self.dlat = []
+        self.dlon = [] #delta longitude
+        
+    def calc_deltalatlon(self):
+        
+        self.dlat = np.diff(self.lat)
+        self.dlon = np.diff(self.lon)
+        
     def parse_line_ebtrk(self,s,s2):
                   
         self.ID.append(s2[0])
@@ -151,7 +159,7 @@ class tracks:
     def calc_vmi(self):
         #calc wind in moving frame from interpolation track
         from pyproj import Geod
-        g = Geod(ellps='clrk66') # Use Clarke 1966 ellipsoid.
+        g = Geod(ellps='WGS84')
         
         self.vmi = np.zeros((len(self.lati)))
         self.thetai = np.zeros((len(self.lati)))
@@ -353,20 +361,56 @@ class tracks:
             print('RAP_mi',self.RAP_mi[i],'r',r,'Vmax',self.Vmaxi_ms[i],'Rmax',self.Rmaxi[i])
             print('x',x,'betas',betas,'bs',bs,'vmax_mf',vmax_mf,'rho',self.rho,'e',np.e,'RADP',self.RADPi[i],'Pc',Pc,'Pci',self.Pci[i])
             print('xn',xn,'betasn',betasn,'RAP_mi',self.RAP_mi[i],'vn',vn)
-            #raw_input('Enter to continue')
-            #if (vst > 200.0):
-            #    raw_input('Enter to continue')
-            #if (np.isnan(vst)):
-            #    raw_input('Enter to continue')
+           
         
-        #if ((rapflag == False) and(r<2.0*self.Rmaxi[i])):
-        #    print 'vs',vs,'vst',vst,'vmi',self.vmi[i],'wm2rad',wm2rad,'cos',np.cos(wm2rad),self.vmi[i] * np.cos(wm2rad),vs + self.vmi[i] * np.cos(wm2rad),'i',i,'wi',wi,'wj',wj,rapflag
-        #    print 'RAP_mi',self.RAP_mi[i],'r',r,'Vmax',self.Vmaxi_ms[i],'Rmax',self.Rmaxi[i]
-        #print 'r',r,'theta',theta,'thetatang',thetatang,'wg lat',wg.latv[wi,wj],'wg lon',wg.lonv[wi,wj],'x',xp,'y',yp
-        #print 'thetai',self.thetai[i],'wm2rad',wm2rad,'vs',vs,'vmi',self.vmi[i],'vst',vst,'cos wm2rad',np.cos(wm2rad)
+    def read_hurdat_track(self,fh,numlines,debug): 
+        self.num_lines = numlines
+        self.trackset_type = 'HURDAT'
         
-        #print 'wlat',wg.latv[wi,wj],'wlon',wg.lonv[wi,wj],'theta',theta,'theta2',theta2,'thetatang',thetatang,'thetai',self.thetai[i],'lati',self.lati[i],'loni',self.loni[i],'x',xp,'y',yp
-        #raw_input('Enter to continue')
+        #yyyymmddhh = []
+        
+        self.lat = np.zeros((self.num_lines))
+        self.lon = np.zeros((self.num_lines))
+        self.Pc = np.zeros((self.num_lines))
+        self.Vmax_knots = np.zeros((self.num_lines))
+        self.Vmax_ms = np.zeros((self.num_lines))
+        self.Rmax = np.zeros((self.num_lines))
+        self.RAP_m = np.zeros((self.num_lines))
+        self.RADP = np.zeros((self.num_lines))
+        
+        for i in range(self.num_lines):
+            l2 = fh.readline()
+            s2 = l2.split(',')
+            #print i,s2
+            yyyymmdd = s2[0].strip()
+            hhmm = s2[1].strip()
+            
+            yyyymmddhh = yyyymmdd+hhmm[0:2]
+            self.dto.append(datetime.strptime(yyyymmddhh,'%Y%m%d%H'))
+            
+            self.lat[i] = float(s2[4].strip()[0:-1])
+            if s2[5].strip()[-1] == 'W':
+                self.lon[i] = -1.0 * float(s2[5].strip()[0:-1])
+            elif s2[5].strip()[-1] == 'E':
+                self.lon[i] = float(s2[5].strip()[0:-1])
+            else:
+                print('error on WestEast')
+                break
+            
+            
+            try:
+                self.Vmax_knots[i] = float(s2[6])
+            except:
+                self.Vmax_knots[i] = 0.0
+                
+            try:
+                self.Pc[i] = float(s2[7])
+            except:
+                self.Pc[i] = 0.0
+                
+        self.Vmax_ms = self.Vmax_knots * 0.5144444 
+        if debug:
+            print('debug')
             
         
         
