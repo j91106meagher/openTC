@@ -26,3 +26,5 @@ Hall & Jewson Tellus 2007, Yonekura and Hall JAMC 2011
 - Lysis (storm termination)
 - Inland filling
 - Extra tropical transistion
+
+HURDAT kernel genesis notebook [trackstats notebook](notebooks/example_trackstats.ipynb)
